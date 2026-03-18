@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LeetCode Patterns - Design System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .patterns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .pattern-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pattern-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .pattern-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .pattern-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .pattern-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .pattern-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .pattern-description {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .pattern-examples {
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .pattern-examples h4 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .example-list {
+            list-style: none;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .example-list li {
+            margin-bottom: 5px;
+            padding-left: 15px;
+            position: relative;
+        }
+
+        .example-list li::before {
+            content: '•';
+            color: #667eea;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .pattern-complexity {
+            display: flex;
+            justify-content: space-between;
+            background: #edf2f7;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.85rem;
+        }
+
+        .complexity-item {
+            text-align: center;
+        }
+
+        .complexity-label {
+            color: #718096;
+            font-weight: 500;
+            margin-bottom: 3px;
+        }
+
+        .complexity-value {
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .languages-section {
+            margin-top: 20px;
+        }
+
+        .languages-title {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .languages-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .language-tag {
+            background: #e2e8f0;
+            color: #4a5568;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            text-align: center;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .language-tag:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .language-tag.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .example-list a {
+            color: #667eea;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-bottom: 1px solid transparent;
+        }
+
+        .example-list a:hover {
+            color: #764ba2;
+            border-bottom-color: #764ba2;
+        }
+
+        .language-selector {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .language-selector h3 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .language-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .language-btn {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            color: #4a5568;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .language-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .language-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .stats-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #718096;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            opacity: 0.8;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .patterns-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>LeetCode Patterns</h1>
+            <p>Master Data Structures & Algorithms with Proven Patterns</p>
+        </div>
+
+        <div class="stats-section">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">8</div>
+                    <div class="stat-label">Core Patterns</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">Languages</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">56</div>
+                    <div class="stat-label">Code Files</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100+</div>
+                    <div class="stat-label">Problems</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="language-selector">
+            <h3>Choose Your Programming Language</h3>
+            <div class="language-buttons">
+                <button class="language-btn active" data-lang="python">Python</button>
+                <button class="language-btn" data-lang="java">Java</button>
+                <button class="language-btn" data-lang="cpp">C++</button>
+                <button class="language-btn" data-lang="javascript">JavaScript</button>
+                <button class="language-btn" data-lang="typescript">TypeScript</button>
+                <button class="language-btn" data-lang="go">Go</button>
+                <button class="language-btn" data-lang="csharp">C#</button>
+            </div>
+        </div>
+
+        <div class="patterns-grid">
+            <!-- Fast and Slow Pointers -->
+            <div class="pattern-card">
+                <div class="pattern-header">
+                    <div class="pattern-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);">⚡</div>
+                    <div class="pattern-title">Fast & Slow Pointers</div>
+                </div>
+                <div class="pattern-description">
+                    Two pointers moving at different speeds to detect cycles, find middle elements, and solve linked list problems efficiently.
+                </div>
+                <div class="pattern-examples">
+                    <h4>Common Problems</h4>
+                    <ul class="example-list">
+                        <li><a data-filekey="fast_and_slow_pointers" href="patterns/python/fast_and_slow_pointers.py" target="_blank">Linked List Cycle Detection</a></li>
+                        <li><a data-filekey="fast_and_slow_pointers" href="patterns/python/fast_and_slow_pointers.py" target="_blank">Find Middle of Linked List</a></li>
+                        <li><a data-filekey="fast_and_slow_pointers" href="patterns/python/fast_and_slow_pointers.py" target="_blank">Happy Number</a></li>
+                        <li><a data-filekey="fast_and_slow_pointers" href="patterns/python/fast_and_slow_pointers.py" target="_blank">Palindrome Linked List</a></li>
+                    </ul>
+                </div>
+                <div class="pattern-complexity">
+                    <div class="complexity-item">
+                        <div class="complexity-label">Time</div>
+                        <div class="complexity-value">O(n)</div>
+                    </div>
+                    <div class="complexity-item">
+                        <div class="complexity-label">Space</div>
+                        <div class="complexity-value">O(1)</div>
+                    </div>
+                </div>
+                <div class="languages-section">
+                    <div class="languages-title">Available in</div>
+                    <div class="languages-grid">
+                        <div class="language-tag">Python</div>
+                        <div class="language-tag">Java</div>
+                        <div class="language-tag">C++</div>
+                        <div class="language-tag">JavaScript</div>
+                        <div class="language-tag">TypeScript</div>
+                        <div class="language-tag">Go</div>
+                        <div class="language-tag">C#</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sliding Window -->
+            <div class="pattern-card">
+                <div class="pattern-header">
+                    <div class="pattern-icon" style="background: linear-gradient(135deg, #4ecdc4, #44a08d);">🪟</div>
+                    <div class="pattern-title">Sliding Window</div>
+                </div>
+                <div class="pattern-description">
+                    Maintain a dynamic window that slides through an array to find optimal subarrays, substrings, or contiguous sequences.
+                </div>
+                <div class="pattern-examples">
+                    <h4>Common Problems</h4>
+                    <ul class="example-list">
+                        <li><a data-filekey="sliding_window" href="patterns/python/sliding_window.py" target="_blank">Maximum Average Subarray</a></li>
+                        <li><a data-filekey="sliding_window" href="patterns/python/sliding_window.py" target="_blank">Longest Substring Without Repeating</a></li>
+                        <li><a data-filekey="sliding_window" href="patterns/python/sliding_window.py" target="_blank">Minimum Window Substring</a></li>
+                        <li><a data-filekey="sliding_window" href="patterns/python/sliding_window.py" target="_blank">Longest Repeating Character Replacement</a></li>
+                    </ul>
+                </div>
+                <div class="pattern-complexity">
+                    <div class="complexity-item">
+                        <div class="complexity-label">Time</div>
+                        <div class="complexity-value">O(n)</div>
+                    </div>
+                    <div class="complexity-item">
+                        <div class="complexity-label">Space</div>
+                        <div class="complexity-value">O(1)</div>
+                    </div>
+                </div>
+                <div class="languages-section">
+                    <div class="languages-title">Available in</div>
+                    <div class="languages-grid">
+                        <div class="language-tag">Python</div>
+                        <div class="language-tag">Java</div>
+                        <div class="language-tag">C++</div>
+                        <div class="language-tag">JavaScript</div>
+                        <div class="language-tag">TypeScript</div>
+                        <div class="language-tag">Go</div>
+                        <div class="language-tag">C#</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Two Pointers -->
+            <div class="pattern-card">
+                <div class="pattern-header">
+                    <div class="pattern-icon" style="background: linear-gradient(135deg, #a8edea, #fed6e3);">👆</div>
+                    <div class="pattern-title">Two Pointers</div>
+                </div>
+                <div class="pattern-description">
+                    Use two pointers to traverse arrays from different positions, often from opposite ends, to solve problems efficiently.
+                </div>
+                <div class="pattern-examples">
+                    <h4>Common Problems</h4>
+                    <ul class="example-list">
+                        <li><a data-filekey="two_pointers" href="patterns/python/two_pointers.py" target="_blank">Two Sum II (Sorted Array)</a></li>
+                        <li><a data-filekey="two_pointers" href="patterns/python/two_pointers.py" target="_blank">Container With Most Water</a></li>
+                        <li><a data-filekey="two_pointers" href="patterns/python/two_pointers.py" target="_blank">3Sum</a></li>
+                        <li><a data-filekey="two_pointers" href="patterns/python/two_pointers.py" target="_blank">Valid Palindrome</a></li>
+                    </ul>
+                </div>
+                <div class="pattern-complexity">
+                    <div class="complexity-item">
+                        <div class="complexity-label">Time</div>
+                        <div class="complexity-value">O(n)</div>
+                    </div>
+                    <div class="complexity-item">
+                        <div class="complexity-label">Space</div>
+                        <div class="complexity-value">O(1)</div>
+                    </div>
+                </div>
+                <div class="languages-section">
+                    <div class="languages-title">Available in</div>
+                    <div class="languages-grid">
+                        <div class="language-tag">Python</div>
+                        <div class="language-tag">Java</div>
+                        <div class="language-tag">C++</div>
+                        <div class="language-tag">JavaScript</div>
+                        <div class="language-tag">TypeScript</div>
+                        <div class="language-tag">Go</div>
+                        <div class="language-tag">C#</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monotonic Stack -->
+            <div class="pattern-card">
+                <div class="pattern-header">
+                    <div class="pattern-icon" style="background: linear-gradient(135deg, #ffecd2, #fcb69f);">📚</div>
+                    <div class="pattern-title">Monotonic Stack</div>
+                </div>
+                <div class="pattern-description">
+                    Maintain a stack with elements in monotonic order to find next greater/smaller elements and solve range problems.
+                </div>
+                <div class="pattern-examples">
+                    <h4>Common Problems</h4>
+                    <ul class="example-list">
+                        <li><a data-filekey="monotonic_stack" href="patterns/python/monotonic_stack.py" target="_blank">Next Greater Element</a></li>
+                        <li><a data-filekey="monotonic_stack" href="patterns/python/monotonic_stack.py" target="_blank">Largest Rectangle in Histogram</a></li>
+                        <li><a data-filekey="monotonic_stack" href="patterns/python/monotonic_stack.py" target="_blank">Trapping Rain Water</a></li>
+                        <li><a data-filekey="monotonic_stack" href="patterns/python/monotonic_stack.py" target="_blank">Daily Temperatures</a></li>
+                    </ul>
+                </div>
+                <div class="pattern-complexity">
+                    <div class="complexity-item">
+                        <div class="complexity-label">Time</div>
+                        <div class="complexity-value">O(n)</div>
+                    </div>
+                    <div class="complexity-item">
+                        <div class="complexity-label">Space</div>
+                        <div class="complexity-value">O(n)</div>
+                    </div>
+                </div>
+                <div class="languages-section">
+                    <div class="languages-title">Available in</div>
+                    <div class="languages-grid">
+                        <div class="language-tag">Python</div>
+                        <div class="language-tag">Java</div>
+                        <div class="language-tag">C++</div>
+                        <div class="language-tag">JavaScript</div>
+                        <div class="language-tag">TypeScript</div>
+                        <div class="language-tag">Go</div>
+                        <div class="language-tag">C#</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top K Elements -->
+            <div class="pattern-card">
+                <div class="pattern-header">
+                    <div class="pattern-icon" style="background: linear-gradient(135deg, #ff9a9e, #fecfef);">🏆</div>
+                    <div class="pattern-title">Top K Elements</div>
+                </div>
+                <div class="pattern-description">
+                    Use heaps (priority queues) to efficiently find the top K elements, frequencies, or most common items in a dataset.
+                </div>
+                <div class="pattern-examples">
+                    <h4>Common Problems</h4>
+                    <ul class="example-list">
+                        <li><a data-filekey="top_k_elements" href="patterns/python/top_k_elements.py" target="_blank">Top K Frequent Elements</a></li>
+                        <li><a data-filekey="top_k_elements" href="patterns/python/top_k_elements.py" target="_blank">Kth Largest Element</a></li>
+                        <li><a data-filekey="top_k_elements" href="patterns/python/top_k_elements.py" target="_blank">Merge K Sorted Lists</a></li>
+                        <li><a data-filekey="top_k_elements" href="patterns/python/top_k_elements.py" target="_blank">Find Median from Data Stream</a></li>
+                    </ul>
+                </div>
+                <div class="pattern-complexity">
+                    <div class="complexity-item">
+                        <div class="complexity-label">Time</div>
+                        <div class="complexity-value">O(n log k)</div>
+                    </div>
+                    <div class="complexity-item">
+                        <div class="complexity-label">Space</div>
+                        <div class="complexity-value">O(k)</div>
+                    </div>
+                </div>
+                <div class="languages-section">
+                    <div class="languages-title">Available in</div>
+                    <div class="languages-grid">
+                        <div class="language-tag">Python</div>
+                        <div class="language-tag">Java</div>
+                        <div class="language-tag">C++</div>
+                        <div class="language-tag">JavaScript</div>
+                        <div class="language-tag">TypeScript</div>
+                        <div class="language-tag">Go</div>
+                        <div class="language-tag">C#</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kadane's Algorithm -->
+            <div class="pattern-card">
+                <div class="pattern-header">
+                    <div class="pattern-icon" style="background: linear-gradient(135deg, #a8edea, #fed6e3);">💎</div>
+                    <div class="pattern-title">Kadane's Algorithm</div>
+                </div>
+                <div class="pattern-description">
+                    Find the maximum sum of a contiguous subarray by maintaining local and global maximum sums while iterating.
+                </div>
+                <div class="pattern-examples">
+                    <h4>Common Problems</h4>
+                    <ul class="example-list">
+                        <li><a data-filekey="kadane_algorithm" href="patterns/python/kadane_algorithm.py" target="_blank">Maximum Subarray</a></li>
+                        <li><a data-filekey="kadane_algorithm" href="patterns/python/kadane_algorithm.py" target="_blank">Maximum Product Subarray</a></li>
+                        <li><a data-filekey="kadane_algorithm" href="patterns/python/kadane_algorithm.py" target="_blank">Best Time to Buy and Sell Stock</a></li>
+                        <li><a data-filekey="kadane_algorithm" href="patterns/python/kadane_algorithm.py" target="_blank">Circular Array Maximum Sum</a></li>
+                    </ul>
+                </div>
+                <div class="pattern-complexity">
+                    <div class="complexity-item">
+                        <div class="complexity-label">Time</div>
+                        <div class="complexity-value">O(n)</div>
+                    </div>
+                    <div class="complexity-item">
+                        <div class="complexity-label">Space</div>
+                        <div class="complexity-value">O(1)</div>
+                    </div>
+                </div>
+                <div class="languages-section">
+                    <div class="languages-title">Available in</div>
+                    <div class="languages-grid">
+                        <div class="language-tag">Python</div>
+                        <div class="language-tag">Java</div>
+                        <div class="language-tag">C++</div>
+                        <div class="language-tag">JavaScript</div>
+                        <div class="language-tag">TypeScript</div>
+                        <div class="language-tag">Go</div>
+                        <div class="language-tag">C#</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level Order Traversal -->
+            <div class="pattern-card">
+                <div class="pattern-header">
+                    <div class="pattern-icon" style="background: linear-gradient(135deg, #ffecd2, #fcb69f);">🌳</div>
+                    <div class="pattern-title">Level Order Traversal</div>
+                </div>
+                <div class="pattern-description">
+                    Traverse tree nodes level by level using BFS (queue) to process all nodes at the same depth before moving to the next level.
+                </div>
+                <div class="pattern-examples">
+                    <h4>Common Problems</h4>
+                    <ul class="example-list">
+                        <li><a data-filekey="level_order_traversal" href="patterns/python/level_order_traversal.py" target="_blank">Binary Tree Level Order Traversal</a></li>
+                        <li><a data-filekey="level_order_traversal" href="patterns/python/level_order_traversal.py" target="_blank">Zigzag Level Order Traversal</a></li>
+                        <li><a data-filekey="level_order_traversal" href="patterns/python/level_order_traversal.py" target="_blank">Right Side View of Binary Tree</a></li>
+                        <li><a data-filekey="level_order_traversal" href="patterns/python/level_order_traversal.py" target="_blank">Average of Levels in Binary Tree</a></li>
+                    </ul>
+                </div>
+                <div class="pattern-complexity">
+                    <div class="complexity-item">
+                        <div class="complexity-label">Time</div>
+                        <div class="complexity-value">O(n)</div>
+                    </div>
+                    <div class="complexity-item">
+                        <div class="complexity-label">Space</div>
+                        <div class="complexity-value">O(w)</div>
+                    </div>
+                </div>
+                <div class="languages-section">
+                    <div class="languages-title">Available in</div>
+                    <div class="languages-grid">
+                        <div class="language-tag">Python</div>
+                        <div class="language-tag">Java</div>
+                        <div class="language-tag">C++</div>
+                        <div class="language-tag">JavaScript</div>
+                        <div class="language-tag">TypeScript</div>
+                        <div class="language-tag">Go</div>
+                        <div class="language-tag">C#</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reverse List -->
+            <div class="pattern-card">
+                <div class="pattern-header">
+                    <div class="pattern-icon" style="background: linear-gradient(135deg, #ff9a9e, #fecfef);">🔄</div>
+                    <div class="pattern-title">Reverse List</div>
+                </div>
+                <div class="pattern-description">
+                    Reverse linked lists in-place using iterative or recursive approaches, often as a sub-problem in more complex algorithms.
+                </div>
+                <div class="pattern-examples">
+                    <h4>Common Problems</h4>
+                    <ul class="example-list">
+                        <li><a data-filekey="reverse_list" href="patterns/python/reverse_list.py" target="_blank">Reverse Linked List</a></li>
+                        <li><a data-filekey="reverse_list" href="patterns/python/reverse_list.py" target="_blank">Reverse Linked List II</a></li>
+                        <li><a data-filekey="reverse_list" href="patterns/python/reverse_list.py" target="_blank">Palindrome Linked List</a></li>
+                        <li><a data-filekey="reverse_list" href="patterns/python/reverse_list.py" target="_blank">Reorder List</a></li>
+                    </ul>
+                </div>
+                <div class="pattern-complexity">
+                    <div class="complexity-item">
+                        <div class="complexity-label">Time</div>
+                        <div class="complexity-value">O(n)</div>
+                    </div>
+                    <div class="complexity-item">
+                        <div class="complexity-label">Space</div>
+                        <div class="complexity-value">O(1)</div>
+                    </div>
+                </div>
+                <div class="languages-section">
+                    <div class="languages-title">Available in</div>
+                    <div class="languages-grid">
+                        <div class="language-tag">Python</div>
+                        <div class="language-tag">Java</div>
+                        <div class="language-tag">C++</div>
+                        <div class="language-tag">JavaScript</div>
+                        <div class="language-tag">TypeScript</div>
+                        <div class="language-tag">Go</div>
+                        <div class="language-tag">C#</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Designed for LeetCode Pattern Mastery • All patterns available in 7 programming languages</p>
+        </div>
+    </div>
+
+    <script>
+        // Language mapping for directory names
+        const directoryMap = {
+            'python': 'python',
+            'java': 'java',
+            'cpp': 'c++',
+            'javascript': 'javascript',
+            'typescript': 'typescript',
+            'go': 'go',
+            'csharp': 'c#'
+        };
+
+        // File name map per language (without extensions)
+        // Keys are the data-filekey set on each link
+        const filenameMap = {
+            python: {
+                fast_and_slow_pointers: 'fast_and_slow_pointers',
+                sliding_window: 'sliding_window',
+                two_pointers: 'two_pointers',
+                monotonic_stack: 'monotonic_stack',
+                top_k_elements: 'top_k_elements',
+                kadane_algorithm: 'kadane_algorithm',
+                level_order_traversal: 'level_order_traversal',
+                reverse_list: 'reverse_list'
+            },
+            java: {
+                fast_and_slow_pointers: 'FastAndSlowPointers',
+                sliding_window: 'SlidingWindow',
+                two_pointers: 'TwoPointers',
+                monotonic_stack: 'MonotonicStack',
+                top_k_elements: 'TopKElements',
+                kadane_algorithm: 'KadaneAlgorithm',
+                level_order_traversal: 'LevelOrderTraversal',
+                reverse_list: 'ReverseLinkedList'
+            },
+            cpp: {
+                fast_and_slow_pointers: 'FastAndSlowPointers',
+                sliding_window: 'SlidingWindow',
+                two_pointers: 'TwoPointers',
+                monotonic_stack: 'MonotonicStack',
+                top_k_elements: 'TopKElements',
+                kadane_algorithm: 'KadaneAlgorithm',
+                level_order_traversal: 'LevelOrderTraversal',
+                reverse_list: 'ReverseList'
+            },
+            javascript: {
+                fast_and_slow_pointers: 'fastAndSlowPointers',
+                sliding_window: 'slidingWindow',
+                two_pointers: 'twoPointers',
+                monotonic_stack: 'monotonicStack',
+                top_k_elements: 'topKElements',
+                kadane_algorithm: 'kadaneAlgorithm',
+                level_order_traversal: 'levelOrderTraversal',
+                reverse_list: 'reverseList'
+            },
+            typescript: {
+                fast_and_slow_pointers: 'fastAndSlowPointers',
+                sliding_window: 'slidingWindow',
+                two_pointers: 'twoPointers',
+                monotonic_stack: 'monotonicStack',
+                top_k_elements: 'topKElements',
+                kadane_algorithm: 'kadaneAlgorithm',
+                level_order_traversal: 'levelOrderTraversal',
+                reverse_list: 'reverseList'
+            },
+            go: {
+                fast_and_slow_pointers: 'fast_and_slow_pointers',
+                sliding_window: 'sliding_window',
+                two_pointers: 'two_pointers',
+                monotonic_stack: 'monotonic_stack',
+                top_k_elements: 'top_k_elements',
+                kadane_algorithm: 'kadane_algorithm',
+                level_order_traversal: 'level_order_traversal',
+                reverse_list: 'reverse_list'
+            },
+            csharp: {
+                fast_and_slow_pointers: 'FastAndSlowPointers',
+                sliding_window: 'SlidingWindow',
+                two_pointers: 'TwoPointers',
+                monotonic_stack: 'MonotonicStack',
+                top_k_elements: 'TopKElements',
+                kadane_algorithm: 'KadaneAlgorithm',
+                level_order_traversal: 'LevelOrderTraversal',
+                reverse_list: 'ReverseList'
+            }
+        };
+
+        // Function to update all links based on selected language
+        function updateLanguageLinks(selectedLang) {
+            const links = document.querySelectorAll('.example-list a');
+            const directory = directoryMap[selectedLang];
+            const files = filenameMap[selectedLang];
+
+            links.forEach(link => {
+                const key = link.getAttribute('data-filekey');
+                if (!key) return;
+                const baseName = files[key];
+                if (!baseName) return;
+
+                // Determine extension per language
+                const ext = selectedLang === 'python' ? '.py'
+                          : selectedLang === 'java' ? '.java'
+                          : selectedLang === 'cpp' ? '.cpp'
+                          : selectedLang === 'javascript' ? '.js'
+                          : selectedLang === 'typescript' ? '.ts'
+                          : selectedLang === 'go' ? '.go'
+                          : selectedLang === 'csharp' ? '.cs'
+                          : '';
+
+                link.href = `patterns/${directory}/${baseName}${ext}`;
+            });
+
+            // Update language tags to show active state
+            document.querySelectorAll('.language-tag').forEach(tag => {
+                tag.classList.remove('active');
+                if (tag.textContent.toLowerCase() === selectedLang || 
+                    (selectedLang === 'cpp' && tag.textContent === 'C++') ||
+                    (selectedLang === 'csharp' && tag.textContent === 'C#')) {
+                    tag.classList.add('active');
+                }
+            });
+        }
+
+        // Add click event listeners to language buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            const languageButtons = document.querySelectorAll('.language-btn');
+            
+            languageButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    languageButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    // Get selected language
+                    const selectedLang = this.getAttribute('data-lang');
+                    
+                    // Update all links
+                    updateLanguageLinks(selectedLang);
+                });
+            });
+
+            // Initialize with Python as default
+            updateLanguageLinks('python');
+        });
+    </script>
+</body>
+</html>
